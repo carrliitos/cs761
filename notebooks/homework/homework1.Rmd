@@ -1,0 +1,67 @@
+---
+title: "Homework 1A"
+subtitle: "COMPSCI 761"
+author: "Benzon Carlitos Salazar (salazarbc24@uww.edu)"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Determine what the key terms refer to in the following study. We want to know the average (mean) amount of money 
+spent on school uniforms each year by families with children at Whitewater Academy. We randomly survey 100 families 
+with children in the school. Three of the families spent $65, $75, and $95, respectively.
+
+- **Population**: The set of all families with children attending Whitewater Academy.
+- **Sample**: A subset of the population, which is 100 randomly selected families.
+- **Parameter of Interest**: The **average (mean) amount of money** spent on school uniforms each year by all families 
+with children at Whitewater Academy.
+- **Statistic**: The **sample mean amount spent on uniforms** by the 100 randomly surveyed families.
+- **Data**: The set of values representing individual amounts spent by surveyed families, such as $65, $75, and $95.
+- **Variable**: The amount of money spent on school uniforms per year by a family (a **quantitative** variable).
+
+2. Determine what the key terms refer to in the following study. Cars with dummies in the front seats were crashed into 
+a wall at a speed of 35 miles per hour. We want to know the proportion of dummies in the driver’s seat that would have 
+had head injuries, if they had been actual drivers. We start with a simple random sample of 75 cars.
+
+- **Population**: The set of all cars (with dummies in the front seats) that could be crashed into a wall at 35 mph.
+- **Sample**: The subset of 75 randomly selected cars used in the study.
+- **Parameter of Interest**: The **proportion of dummies in the driver’s seat that would have had head injuries** if 
+they had been actual drivers, across all possible crashes.
+- **Statistic**: The **proportion of dummies in the driver’s seat that experienced head injuries** in the sample of 
+75 cars.
+- **Data**: The individual results from the 75 crashes, indicating whether each driver-seat dummy sustained a head 
+injury (**yes/no**, categorical data).
+-**Variable**: Whether a **driver-seat dummy sustains a head injury** (**qualitative, binary categorical** variable: 
+"yes" or "no").
+
+3. The data are the number of machines in a gym. You sample five gyms. One gym has 12 machines, one gym has 15 machines, 
+one gym has ten machines, one gym has 22 machines, and the other gym has 20 machines. What type of data is this?
+
+- **Type of Data**: **Quantitative** (Numerical)  
+- **Discrete or Continuous?**: **Discrete**; because the number of machines is a countable whole number and cannot take 
+fractional values.
+
+4. You go to the supermarket and purchase three cans of soup (19 ounces tomato soup, 14.1 ounces lentil soup and 19 
+ounces of Italian wedding), two packages of nuts (walnuts and peanuts), four different kinds of vegetable (broccoli, 
+cauliflower, spinach and carrots), and two desserts (16 ounces pistachio ice cream and 32 ounces of chocolate cookies). 
+Name data set that are quantitative discrete, quantitative continuous and qualitative.
+
+- **Quantitative Discrete Data** (Countable numerical values):
+  - **Number of soup cans** (3)
+  - **Number of nut packages** (2)
+  - **Number of vegetable types** (4)
+  - **Number of dessert items** (2)
+- **Quantitative Continuous Data** (Measurements that can take any value within a range):
+  - **Weight of tomato soup** (19 ounces)
+  - **Weight of lentil soup** (14.1 ounces)
+  - **Weight of Italian wedding soup** (19 ounces)
+  - **Weight of pistachio ice cream** (16 ounces)
+  - **Weight of chocolate cookies** (32 ounces)
+- **Qualitative Data** (Categorical variables that describe characteristics):
+  - **Types of soup** (Tomato, Lentil, Italian Wedding)
+  - **Types of nuts** (Walnuts, Peanuts)
+  - **Types of vegetables** (Broccoli, Cauliflower, Spinach, Carrots)
+  - **Types of desserts** (Pistachio Ice Cream, Chocolate Cookies)
