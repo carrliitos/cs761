@@ -1,0 +1,232 @@
+---
+title: "Homework 5"
+author: "Benzon Carlitos Salazar (salazarbc24@uww.edu)"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+options(knitr.kable.NA = "")
+options(knitr.duplicate.label = "allow")
+options(gt.html_tag_check = FALSE)
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+
+library(magrittr)
+```
+
+# Homework for Data Visualization, Data Cleaning and Data Transformation
+
+1. Make a histogram of the carat variable in the diamonds dataset that is available when you load the tidyverse 
+package. Experiment with different binwidth values. What value reveals the most interesting pattern? Try to see if you 
+separate it into different types to see a particular pattern.
+
+```{r question_1}
+diamonds_data <- ggplot2::diamonds
+
+ggplot2::ggplot(diamonds_data, ggplot2::aes(x = carat)) +
+  ggplot2::geom_histogram(binwidth = 0.1,
+                          fill = "steelblue",
+                          color = "black") +
+  ggplot2::labs(title = "Histogram of Diamond Carat", x = "Carat", y = "Count")
+
+ggplot2::ggplot(diamonds_data, ggplot2::aes(x = carat)) +
+  ggplot2::geom_histogram(binwidth = 0.05,
+                          fill = "steelblue",
+                          color = "black") +
+  ggplot2::labs(title = "Histogram of Diamond Carat (Binwidth = 0.05)", x = "Carat", y = "Count")
+
+ggplot2::ggplot(diamonds_data, ggplot2::aes(x = carat)) +
+  ggplot2::geom_histogram(binwidth = 0.01,
+                          fill = "steelblue",
+                          color = "black") +
+  ggplot2::labs(title = "Histogram of Diamond Carat (Binwidth = 0.01)", x = "Carat", y = "Count")
+
+# Facets
+ggplot2::ggplot(diamonds_data, ggplot2::aes(x = carat)) +
+  ggplot2::geom_histogram(binwidth = 0.05,
+                          fill = "orange",
+                          color = "black") +
+  ggplot2::facet_wrap( ~ cut, scales = "free_y") +
+  ggplot2::labs(title = "Carat Distribution by Cut", x = "Carat", y = "Count")
+
+ggplot2::ggplot(diamonds_data, ggplot2::aes(x = carat)) +
+  ggplot2::geom_histogram(binwidth = 0.05,
+                          fill = "orange",
+                          color = "black") +
+  ggplot2::facet_wrap( ~ color, scales = "free_y") +
+  ggplot2::labs(title = "Carat Distribution by Color", x = "Carat", y = "Count")
+```
+
+- A binwidth of 0.1 gives a general overview but may smooth out smaller patterns.
+- A binwidth of 0.01 or 0.05 reveals discrete carat groupings (e.g., 0.30, 0.50, 1.00 carat), which reflect consumer or 
+manufacturing preferences.
+- When you facet by `cut`, it shows how different cuts are distributed across carat sizes. For example, Ideal cuts are 
+common at lower carats, while Fair cuts may appear more in higher carat diamonds.
+- When you facet by `color`, smaller weights still dominate the across all colors due to market demand. Colors I and J 
+definitely shows a little bit wider carat distributions. Colors D and E shows narrower carat distributions.
+
+2. Make a scatterplot of bill_depth_mm versus bill_length_mm and color the points by species (penguins data set). What 
+does adding coloring by species reveal about the relationship between these two variables? What about faceting by species?
+
+```{r question_2a}
+ggplot2::ggplot(palmerpenguins::penguins, 
+                ggplot2::aes(x = bill_length_mm, 
+                             y = bill_depth_mm, 
+                             color = species)) +
+  ggplot2::geom_point(na.rm = TRUE) +
+  ggplot2::labs(title = "Bill Depth vs. Bill Length Colored by Species", 
+                x = "Bill Length (mm)", 
+                y = "Bill Depth (mm)") +
+  ggplot2::theme_minimal()
+```
+
+Colored by species, we get the following:
+
+- Reveals clear groupings by species.
+- Gentoo tend to have longer bills and shallower depths.
+- Adelie have shorter and deeper bills.
+- Chinstrap fall somewhere in between.
+
+Coloring helps you see clusters and overlap between species in a shared plot.
+
+```{r question_2b}
+ggplot2::ggplot(palmerpenguins::penguins, 
+                ggplot2::aes(x = bill_length_mm, 
+                             y = bill_depth_mm)) +
+  ggplot2::geom_point(ggplot2::aes(color = species), na.rm = TRUE) +
+  ggplot2::facet_wrap(~species) +
+  ggplot2::labs(title = "Bill Depth vs. Bill Length Faceted by Species",
+                x = "Bill Length (mm)",
+                y = "Bill Depth (mm)") +
+  ggplot2::theme_minimal()
+```
+
+Faceting by species:
+
+- Separates species into different panels.
+- Makes within-species trends easier to analyze.
+- Helps compare slope and spread of the relationship for each species without interference from others.
+
+3. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights. Show all 
+your work. (Optional Homework)
+
+```{r question_3}
+# dplyr select
+flights_1 <- 
+  dplyr::select(nycflights13::flights, dep_time, dep_delay, arr_time, arr_delay)
+
+# dplyr + piping `%>%`
+flights_2 <- 
+  nycflights13::flights %>%
+  dplyr::select(dep_time, dep_delay, arr_time, arr_delay)
+
+# Using column indexes
+flights_3 <-
+  nycflights13::flights[, c("dep_time", "dep_delay", "arr_time", "arr_delay")]
+
+# subset
+flights_4 <-
+  subset(nycflights13::flights, select = c(dep_time, dep_delay, arr_time, arr_delay))
+
+# using `dplyr::select(dplyr::starts_with())`
+flights_5 <-
+  nycflights13::flights %>%
+  dplyr::select(dplyr::starts_with("dep"), dplyr::starts_with("arr"))
+
+# using `dplyr::select(dplyr::matches())` + regex
+flights_6 <-
+  nycflights13::flights %>%
+  dplyr::select(dplyr::matches("^(dep|arr)_(time|delay)"))
+
+# Base R list indexing
+flights_7 <-
+  data.frame(
+    dep_time = nycflights13::flights[["dep_time"]],
+    dep_delay = nycflights13::flights[["dep_delay"]],
+    arr_time = nycflights13::flights[["arr_time"]],
+    arr_delay = nycflights13::flights[["arr_delay"]]
+  )
+
+# using `with()`
+flights_8 <-
+  with(nycflights13::flights, data.frame(dep_time, dep_delay, arr_time, arr_delay))
+
+# `tidyselect::one_of()`
+flights_9 <-
+  nycflights13::flights %>%
+  dplyr::select(tidyselect::one_of(c("dep_time", "dep_delay", "arr_time", "arr_delay")))
+```
+
+4. Compare dep_time, sched_dep_time and dep_delay. How would you expect those three numbers to be related?
+
+```{r question_4a}
+flights <- 
+  nycflights13::flights %>%
+  dplyr::select(dep_time, sched_dep_time, dep_delay)
+
+flights$dep_time %>%
+  dplyr::glimpse()
+```
+
+- `dep_time`: The actual departure time of the flight (in local time, typically in `hhmm` format).
+
+```{r question_4b}
+flights$sched_dep_time %>%
+  dplyr::glimpse()
+```
+
+- `sched_dep_time`: The scheduled departure time (also in `hhmm` format).
+
+```{r question_4c}
+flights$dep_delay %>%
+  dplyr::glimpse()
+```
+
+- `dep_delay`: The departure delay in minutes, calculated as: 
+
+`dep_delay = dep_time(in minutes) - sched_dep_time(in minutes)`
+
+You would expect that `dep_delay` is approximately 
+
+`minutes_since_midnight(dep_time) - minutes_since_midnight(sched_dep_time)`.
+
+- If a flight left on time, then `dep_delay=0`, and `dep_time == sched_temp_time`.
+- If a flight was delayed, then `dep_time > sched_dep_time` and `dep_delay > 0`.
+- If a flight left early, then `dep_time < sched_dep_time` and `dep_delay < 0`.
+
+5. Find the flights that are most delayed upon departure from each destination. Show your R code and your solution printed.
+
+```{r question_5}
+flights <- 
+  nycflights13::flights
+
+most_delayed_by_dest <- 
+  flights %>%
+  dplyr::filter(!is.na(dep_delay)) %>%
+  dplyr::group_by(dest) %>%
+  dplyr::filter(dep_delay == max(dep_delay, na.rm = TRUE)) %>%
+  dplyr::ungroup()
+
+most_delayed_by_dest %>%
+  dplyr::select(dep_time,
+                sched_dep_time,
+                arr_time,
+                sched_arr_time,
+                carrier,
+                flight,
+                origin,
+                dest) %>%
+  dplyr::arrange(sched_dep_time) %>%
+  kableExtra::kable() %>%
+  kableExtra::kable_styling(
+    position = "left",
+    latex_options = c("striped", "repeat_header", "scale_down"),
+    stripe_color = "gray!15"
+  )
+```
+
+```{r clean_up, include=FALSE}
+rm(list = ls(all.names = TRUE)) # clear all objects including hidden objects
+invisible(gc()) # free up memory
+```
