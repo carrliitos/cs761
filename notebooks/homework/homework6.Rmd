@@ -1,0 +1,97 @@
+---
+title: "Homework 6"
+author: "Benzon Carlitos Salazar (salazarbc24@uww.edu)"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+options(knitr.kable.NA = "")
+options(knitr.duplicate.label = "allow")
+options(gt.html_tag_check = FALSE)
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+
+library(magrittr)
+```
+
+# Hypothesis Testing
+
+1. The mean serum – creatinine level measured in 12 patients 24 hours after they received a newly proposed antibiotic was 1.2 mg/dl.
+
+a) If the mean and standard deviation of serum creatinine in the general population are 1.0 and 0.4 mg/dl, respectively 
+then using a significance level of 0.05, test whether the mean serum creatinine level in this group is different than 
+from that of the general population.
+
+b) What is the p-value for the test?
+
+- **Null hypothesis** ($H_0$): $\mu = 1.0$
+- **Alternative hypothesis** ($H_A$): $\mu \ne 1.0$
+
+at a significance level of $\alpha = 0.05$.
+
+```{r problem_1}
+sample_mean <- 1.2
+population_mean <- 1.0
+population_sd <- 0.4
+n <- 12
+
+standard_error <- population_sd / sqrt(n)
+z <- (sample_mean - population_mean) / standard_error
+p_value <- 2 * (1 - pnorm(abs(z)))
+```
+
+* **Z-score**: `r round(z, 3)`
+* **P-value**: `r round(p_value, 4)`
+
+Since the p-value is `r round(p_value, 4)`, which is greater than the significance level of 0.05, we **fail to reject the null hypothesis**.
+There is **not sufficient evidence** to conclude that the mean serum creatinine level in the treated group is different from the general population.
+
+2. Suppose the incidence rate of myocardial infection (MI) was 5 per 1000 among 45 to 54 year old men in 1990. To look 
+at the changes in incidence over time, 5000 men in this age group were followed for 1 year starting in 2025. Fifteen new 
+cases were found of MI.
+
+a) Test the hypothesis using significance level of 0.05, that incidence rates have changed from 1990 to 2025.
+b) Report a p-value corresponding to part a. 
+
+```{r part_a_b}
+observed_cases <- 15
+person_years <- 5000
+rate_1990 <- 5 / 1000
+
+expected_cases <- person_years * rate_1990
+poisson.test(observed_cases, T = person_years, r = rate_1990, alternative = "two.sided")
+```
+
+Suppose that 25% of patients with MI in 1990 died within 24 hours. This proportion is called the 24 – hour case fatality rate.
+
+c) If the 15 new MI cases in the preceding study, 5 died within 24 hours, test whether the 24 – hour case fatality rate 
+changed from 1990 to 2025.
+
+```{r partc}
+binom.test(x = 5, n = 15, p = 0.25, alternative = "two.sided")
+```
+
+d) Suppose we eventually plan to accumulate 50 MI cases during the period 2025-2030. Assume that the 24-hour case fatality 
+rate is truly 20% during this period. How much power would such a study have in distinguishing between case-fatality rates 
+in 1990 and 2025 – 2030 if a two-sided test with significance level 0.05 is planned?
+
+```{r part_d}
+# Effective Size
+ES.h <- function(p1, p2) {
+  2 * asin(sqrt(p1)) - 2 * asin(sqrt(p2))
+}
+
+pwr::pwr.2p.test(h = ES.h(0.25, 0.20), n = 50, sig.level = 0.05, alternative = "two.sided")
+```
+
+e) Using R software, show how large a sample is needed in part (d) to achieve 90% power?
+
+```{r part_e}
+pwr::pwr.2p.test(h = ES.h(0.25, 0.20), power = 0.90, sig.level = 0.05, alternative = "two.sided")
+```
+
+```{r clean_up, include=FALSE}
+rm(list = ls(all.names = TRUE)) # clear all objects including hidden objects
+invisible(gc()) # free up memory
+```
